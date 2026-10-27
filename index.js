@@ -11,7 +11,12 @@ const server = http.createServer((req, res) => {
   //   res.write(JSON.stringify({ name: "hossein", lastName: "tehrani" }));
   console.log(req.url);
   if (req.url === "/products") {
-    productController.get(req, res);
+    if (req.method == "GET") {
+      productController.get(req, res);
+    }
+    if (req.method == "POST") {
+      productController.create(req, res);
+    }
   } else if (/^\/products\/\d+$/.test(req.url)) {
     productController.getById(req, res);
   } else {
