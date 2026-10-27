@@ -1,5 +1,6 @@
 const http = require("http");
 const productController = require("./controllers/products.controller");
+const errorHandler = require("./controllers/errorHandler.controller");
 const PORT = 3000;
 const server = http.createServer((req, res) => {
   //   res.writeHead(200, { "content-type": "text/plain" });
@@ -11,9 +12,10 @@ const server = http.createServer((req, res) => {
   console.log(req.url);
   if (req.url === "/products") {
     productController.get(req, res);
+  } else if (/^\/products\/\d+$/.test(req.url)) {
+    productController.getById(req, res);
   } else {
-    res.writeHead(200, { "content-type": "html" });
-    res.write("<h1>here your first words!</h1>");
+    errorHandler.notFound(res);
   }
 });
 server.listen(3000, () => {
