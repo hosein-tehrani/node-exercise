@@ -1,13 +1,12 @@
 const os = require("os");
 async function get(req, res) {
   try {
-    res.writeHead(200, { "content-type": "application/json" });
-
     const uptime = os.uptime();
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
     const toGB = (bytes) => +(bytes / 1024 ** 3).toFixed(2);
+    res.writeHead(200, { "content-type": "application/json" });
     const userOS = {
       name: os.type(),
       arch: os.arch(),
