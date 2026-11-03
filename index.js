@@ -2,7 +2,7 @@ const http = require("http");
 const productController = require("./controllers/products.controller");
 const errorHandler = require("./controllers/errorHandler.controller");
 const PORT = 3000;
-const SINGLE_PRODUCT_ROUTE = /^\/products\/\d+$/;
+const SINGLE_PRODUCT_ROUTE = /^\/products\/[a-fA-F0-9]{24}$/;;
 const server = http.createServer((req, res) => {
   const { url, method } = req;
   //   res.writeHead(200, { "content-type": "text/plain" });

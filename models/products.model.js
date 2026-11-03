@@ -1,51 +1,61 @@
+///////////////////////////////////////////////
+// for using fs for using a json as database //
+///////////////////////////////////////////////
 const fs = require("fs/promises");
 const products = require("../data/products.json");
 const fileAddress = process.cwd() + "/data/products.json";
 const writeFile = async () => {
   await fs.writeFile(fileAddress, JSON.stringify(products));
 };
-
+///////////////////////////////////////////////
+///////// using mongodb as database ///////////
+///////////////////////////////////////////////
+const connectToMongoDB = require("../utils/mongodb-connection");
+const { ObjectId } = require("mongodb");
+const dbPromise = new connectToMongoDB().Get();
 async function getAll() {
-  return new Promise((res, rej) => {
-    res(products);
-  });
+  const db = await dbPromise;
+
+  const products = await db
+    .collection("products")
+    .find({})
+    .sort({ _id: 1 })
+    .toArray();
+
+  return products;
 }
+
 async function findById(id) {
-  return new Promise((res, rej) => {
-    res(products.find((product) => product.id === Number(id)));
-  });
+  const db = await dbPromise;
+  if (!ObjectId.isValid(id)) {
+    return null;
+  }
+  const product = await db
+    .collection("products")
+    .findOne({ _id: new ObjectId(id) });
+  return product;
 }
 async function create(product) {
-  products.push(product);
-  await writeFile();
+  const db = await dbPromise;
+  const result = await db.collection("products").insertOne(product);
 
-  return product;
+  return result;
 }
 async function update(id, product) {
-    const index = products.findIndex((prod) => prod.id === Number(id));
+  const db = await dbPromise;
+  const result = await db
+    .collection("products")
+    .updateOne({ _id: new ObjectId(id) }, { $set: { ...product } });
 
-    if (index === -1) return null;
-
-    products[index] = {
-      ...products[index],
-      ...product,
-      id: products[index].id,
-    };
-
-  await writeFile();
-
-  return product;
+  return result;
 }
 async function remove(id) {
-  const index = products.findIndex((product) => product.id === Number(id));
+  const db = await dbPromise;
+  const result = await db
+    .collection("products")
+    .deleteOne({ _id: new ObjectId(id) });
 
-  if (index === -1) return null;
-
-  const [deletedProduct] = products.splice(index, 1);
-
-  await writeFile();
-
-  return deletedProduct;
+  return result;
 }
 const productModel = {
   getAll,
