@@ -1,6 +1,7 @@
 const http = require("http");
 const productController = require("./controllers/products.controller");
 const errorHandler = require("./controllers/errorHandler.controller");
+const osController = require("./controllers/os.controller");
 const PORT = 3000;
 const SINGLE_PRODUCT_ROUTE = /^\/products\/[a-fA-F0-9]{24}$/;;
 const server = http.createServer((req, res) => {
@@ -12,6 +13,9 @@ const server = http.createServer((req, res) => {
   //   res.writeHead(200, { "content-type": "application/json" });
   //   res.write(JSON.stringify({ name: "hossein", lastName: "tehrani" }));
   console.log({ url, method });
+  if(url === "/os") {
+    osController.get(req,res)
+  }
   if (url === "/products") {
     if (method == "GET") {
       productController.get(req, res);
