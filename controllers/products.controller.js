@@ -4,8 +4,20 @@ const errorHandler = require("./errorHandler.controller");
 async function get(req, res) {
   try {
     const products = await productModel.getAll();
-    res.writeHead(200, { "content-type": "application/json" });
-    res.write(JSON.stringify(products));
+    res.writeHead(200, { "content-type": "html" });
+    const singleProduct = (p) => {
+      return `<h2>${p.name}</h2>
+          <h3>${p.price}</h3>
+          <a href="products/${p._id}">details</a>
+          <hr/>`;
+    };
+    const htmlContent = `<div>
+          <h1>PRODUCTS</h1>
+          ${products.map((product) => {
+            return singleProduct(product);
+          })}
+        </div>`;
+    res.write(htmlContent);
     res.end();
   } catch (error) {
     console.error(error);
@@ -16,12 +28,15 @@ async function getById(req, res) {
     const url = req.url;
     const id = url.split("/")[2];
     const product = await productModel.findById(id);
-    console.log({ product });
     if (!product) {
       return errorHandler.notProduct(res);
     }
-    res.writeHead(200, { "content-type": "application/json" });
-    res.write(JSON.stringify(product));
+    res.writeHead(200, { "content-type": "html" });
+    const htmlContent = `<div>
+          <h2>${product.name}</h2>
+          <h3>${product.price}</h3>
+        </div>`;
+    res.write(htmlContent);
     res.end();
   } catch (error) {
     res.writeHead(500, { "content-type": "html" });
