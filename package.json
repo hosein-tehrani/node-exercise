@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon node index.js",
+    "dev": "nodemon node ./3-stream-exercise/server.js",
     "start": "node index.js"
   },
   "author": "",
