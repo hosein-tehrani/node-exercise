@@ -43,6 +43,6 @@ const server = http.createServer((req, res) => {
     errorHandler.notFound(res);
   }
 });
-server.listen(3000, () => {
+server.listen(PORT, () => {
   console.log(`app served on=> http://localhost:${PORT}/`);
 });
